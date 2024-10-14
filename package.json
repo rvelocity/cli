@@ -1,0 +1,35 @@
+{
+  "name": "rvelocity-cli",
+  "version": "1.0.7",
+  "description": "Add components, screen to your apps.",
+  "main": "index.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvelocity/cli"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "rc": "./bin/cli.js"
+  },
+  "keywords": [
+    "react-native",
+    "react-native-cli",
+    "react-cli",
+    "component-generator",
+    "code-generator",
+    "ui-library",
+    "react-native-ui",
+    "react-native-tooling",
+    "react-native-setup"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "commander": "^12.1.0",
+    "open": "^10.1.0"
+  }
+}
