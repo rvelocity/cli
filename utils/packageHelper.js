@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import { logger } from "./logger.js";
 
 export function detectPackageManager() {
   if (fs.existsSync(path.join(process.cwd(), "yarn.lock"))) {
@@ -30,19 +31,29 @@ export function packageInstaller(packageManager, packages, isDev = false) {
       installCommand = `pnpm add ${packages.join(" ")}${isDev ? " -D" : ""}`;
       break;
     default:
-      console.error("Unsupported package manager.");
+      logger("Unsupported package manager.", "red");
       process.exit(1);
   }
 
-  console.log(
+  logger(
     `Installing ${
       isDev ? "dev dependencies" : "dependencies"
-    } with ${packageManager}...`
+    } with ${packageManager}...`,
+    "blue"
   );
+
   try {
     execSync(installCommand, { stdio: "inherit" });
   } catch {
-    console.log(`Failed to install packages with ${packageManager}`);
+    logger(
+      `Failed to install packages with ${packageManager}, Please try again!`,
+      "red"
+    );
     process.exit(1);
   }
+}
+
+// Utility function to determine the platform (React or React Native)
+export function determinePlatform(isReactNative) {
+  return isReactNative ? "react-native" : "react";
 }

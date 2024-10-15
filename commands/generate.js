@@ -20,7 +20,8 @@ export default function generateComponent(args) {
 
   if (!folder || !component) {
     logger(
-      "Please provide folder and component name: rc g <folder> <component> [-rn]"
+      "Please provide folder and component name: rc g <folder> <component> [-rn]",
+      "red"
     );
     process.exit(1);
   }
@@ -72,11 +73,10 @@ export default function generateComponent(args) {
   writeFile(styleFilePath, stylesContent);
   writeFile(barrelFilePath, barrelContent);
 
-  // Success log
-
   logger(
     `${component} component for ${
       isReactNative ? "React Native" : "ReactJS"
-    } created successfully in ${folder}/${component}.tsx`
+    } created successfully in ${folder}/${component}.tsx`,
+    "green"
   );
 }

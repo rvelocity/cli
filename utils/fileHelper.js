@@ -1,5 +1,10 @@
 import fs from "fs";
+import { createRequire } from "module";
+import fetch from "node-fetch";
 import { logger } from "./logger.js";
+
+// Dynamically import package.json using createRequire
+const require = createRequire(import.meta.url);
 
 /**
  * Utility function to safely create directories
@@ -20,8 +25,32 @@ export function writeFile(filePath, content) {
   try {
     fs.writeFileSync(filePath, content, "utf8");
   } catch (error) {
-    logger(`Error writing file at ${filePath}: ${error}`);
+    logger(`Error writing file at ${filePath}: ${error}`, "red");
     process.exit(1);
+  }
+}
+
+/**
+ * Utility function to move a file from one location to another
+ * @param {string} sourcePath - The current file path
+ * @param {string} destinationPath - The new file path
+ */
+export function moveFile(sourcePath, destinationPath) {
+  try {
+    // Ensure the destination directory exists
+    const destinationDir = require("path").dirname(destinationPath);
+    if (!fs.existsSync(destinationDir)) {
+      fs.mkdirSync(destinationDir, { recursive: true });
+    }
+
+    // Move the file
+    fs.renameSync(sourcePath, destinationPath);
+  } catch (error) {
+    logger(
+      `Error moving file from ${sourcePath} to ${destinationPath}: ${error}`,
+      "red"
+    );
+    process.exit(1); // Exit the process if there is an error
   }
 }
 
@@ -34,7 +63,18 @@ export function readTemplate(templatePath) {
   try {
     return fs.readFileSync(templatePath, "utf8");
   } catch (error) {
-    logger(`Error reading template at ${templatePath}: ${error}`);
-    process.exit(1);
+    logger(`Error reading template at ${templatePath}: ${error}`, "red");
+    process.exit(1); // Exit the process if there is an error
   }
+}
+
+/**
+ * Utility function to download files
+ * @param {string} url - Url to fetch file
+ * @param {string} destination - Path to write downloaded file
+ */
+export async function downloadFile(url, destination) {
+  const response = await fetch(url);
+  const data = await response.text();
+  writeFile(destination, data);
 }
