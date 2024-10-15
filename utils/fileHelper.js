@@ -1,6 +1,7 @@
 import fs from "fs";
 import { createRequire } from "module";
 import fetch from "node-fetch";
+// import path from "path";
 import { logger } from "./logger.js";
 
 // Dynamically import package.json using createRequire
@@ -78,3 +79,27 @@ export async function downloadFile(url, destination) {
   const data = await response.text();
   writeFile(destination, data);
 }
+
+// Locally copy folder from source to destination
+/*
+export function copyFolderRecursiveSync(source, target) {
+  const targetFolder = target;
+  if (!fs.existsSync(targetFolder)) {
+    fs.mkdirSync(targetFolder, { recursive: true });
+  }
+
+  if (fs.lstatSync(source).isDirectory()) {
+    let files = fs.readdirSync(source);
+    files.forEach((file) => {
+      const curSource = path.join(source, file);
+      const curTarget = path.join(targetFolder, file);
+
+      if (fs.lstatSync(curSource).isDirectory()) {
+        copyFolderRecursiveSync(curSource, curTarget);
+      } else {
+        fs.copyFileSync(curSource, curTarget);
+      }
+    });
+  }
+}
+*/
