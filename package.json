@@ -1,6 +1,6 @@
 {
   "name": "rvelocity-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Add components, screen to your apps.",
   "main": "index.js",
   "type": "module",

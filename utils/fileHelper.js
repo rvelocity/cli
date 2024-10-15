@@ -60,7 +60,7 @@ export function moveFile(sourcePath, destinationPath) {
  * @param {string} templatePath - Path to the template file
  * @returns {string} - The template content
  */
-export function readTemplate(templatePath) {
+/*export function readTemplate(templatePath) {
   try {
     return fs.readFileSync(templatePath, "utf8");
   } catch (error) {
@@ -68,6 +68,7 @@ export function readTemplate(templatePath) {
     process.exit(1); // Exit the process if there is an error
   }
 }
+*/
 
 /**
  * Utility function to download files

@@ -1,15 +1,6 @@
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
-import {
-  createDirectory,
-  readTemplate,
-  writeFile,
-} from "../utils/fileHelper.js";
+import path from "path";
+import { createDirectory, writeFile } from "../utils/fileHelper.js";
 import { logger } from "../utils/logger.js";
-
-// Utility to manage __dirname in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 /**
  * Generates a component based on user input
@@ -37,40 +28,21 @@ export default function generateComponent(args) {
   );
   const barrelFilePath = path.join(componentDir, "index.ts");
 
-  // Templates
-  const templateDir = path.join(__dirname, "..", "templates");
-  const componentTemplatePath = path.join(
-    templateDir,
-    isReactNative ? "react-native.tsx" : "react.tsx"
-  );
-  const stylesTemplatePath = path.join(
-    templateDir,
-    isReactNative ? "styles.ts" : "styles.css"
-  );
+  // Select the appropriate template
+  const componentTemplate = isReactNative
+    ? reactNativeTemplate(component)
+    : reactTemplate(component);
+  const stylesTemplate = isReactNative
+    ? reactNativeStylesTemplate
+    : reactStylesTemplate(component);
+  const barrelContent = indexTemplate(component);
 
   // Create component directory
   createDirectory(componentDir);
 
-  // Read template content
-  const componentTemplate = readTemplate(componentTemplatePath);
-  const stylesTemplate = readTemplate(stylesTemplatePath);
-
-  // Replace placeholder in templates
-  const componentContent = componentTemplate.replace(
-    /__COMPONENT_NAME__/g,
-    component
-  );
-  const stylesContent = stylesTemplate.replace(
-    /__COMPONENT_NAME__/g,
-    component
-  );
-
-  // Barrel file content
-  const barrelContent = `export { default } from './${component}';`;
-
   // Write files
-  writeFile(componentFilePath, componentContent);
-  writeFile(styleFilePath, stylesContent);
+  writeFile(componentFilePath, componentTemplate);
+  writeFile(styleFilePath, stylesTemplate);
   writeFile(barrelFilePath, barrelContent);
 
   logger(
@@ -80,3 +52,59 @@ export default function generateComponent(args) {
     "green"
   );
 }
+
+const indexTemplate = (component) =>
+  `export { default } from './${component}';`;
+
+const reactNativeTemplate = (component) => `import React from 'react';
+import { Text, View } from 'react-native';
+import styles from './styles.ts';
+
+type ${component}Props = {
+  // Define props here
+};
+
+const ${component}: React.FC<${component}Props> = (props) => {
+  return (
+    <View style={styles.container}>
+      <Text>${component} Component</Text>
+    </View>
+  );
+};
+
+export default ${component};
+`;
+
+const reactTemplate = (component) => `import React from 'react';
+import './styles.css';
+
+type ${component}Props = {
+  // Define props here
+};
+
+const ${component}: React.FC<${component}Props> = (props) => {
+  return (
+    <div>
+      <h1>${component} Component</h1>
+    </div>
+  );
+};
+
+export default ${component};
+`;
+
+const reactNativeStylesTemplate = `import { StyleSheet } from 'react-native';
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+`;
+
+const reactStylesTemplate = (component) => `.${component} {
+  /* Add styles here */
+}
+`;
