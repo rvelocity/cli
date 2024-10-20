@@ -22,6 +22,7 @@ plugins: [
       alias: {
         '@': './src',
         '@assets': './assets',
+        '@.storybook': './.storybook',
       },
     },
   ],
@@ -38,7 +39,8 @@ Modify the `compilerOptions` in your `tsconfig.json` to set the base URL and pat
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@assets/*": ["./assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@.storybook/*": ["./.storybook/*"],
     }
   },
   "include": [
